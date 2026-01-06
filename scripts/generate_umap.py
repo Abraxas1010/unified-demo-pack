@@ -7,8 +7,9 @@ except ImportError:
     print("numpy not installed; install and retry", file=sys.stderr); sys.exit(2)
 try:
     import umap
+    HAVE_UMAP = True
 except ImportError:
-    print("umap-learn not installed; pip install umap-learn", file=sys.stderr); sys.exit(2)
+    HAVE_UMAP = False
 try:
     import matplotlib.pyplot as plt
 except ImportError:
@@ -22,7 +23,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--graph', required=True)
     ap.add_argument('--out2d', required=False)
-    ap.add_argument('--out3d', required=False)
+    ap.add_argument('--out3d', required=False, help='write interactive HTML if plotly is available')
+    ap.add_argument('--out3d-png', required=False, help='write static 3D PNG (matplotlib fallback)')
     args = ap.parse_args()
 
     with open(args.graph) as f:
@@ -44,21 +46,60 @@ def main():
         X.append([d, len(name)])
     X = np.asarray(X, dtype=float)
     if len(X) == 0:
-        print("graph has no nodes", file=sys.stderr); sys.exit(1)
+        if args.out2d and plt is not None:
+            plt.figure(figsize=(6,6))
+            plt.text(0.5, 0.5, 'No nodes', ha='center', va='center')
+            plt.axis('off')
+            plt.tight_layout(); plt.savefig(args.out2d, dpi=200)
+            print(f"wrote {args.out2d} (empty)")
+        if args.out3d and px is not None:
+            import plotly.graph_objs as go
+            fig = go.Figure()
+            fig.add_annotation(text='No nodes', x=0.5, y=0.5, showarrow=False)
+            fig.write_html(args.out3d)
+            print(f"wrote {args.out3d} (empty)")
+        sys.exit(0)
 
-    reducer2 = umap.UMAP(n_components=2, random_state=42)
-    Y2 = reducer2.fit_transform(X)
+    if HAVE_UMAP:
+        reducer2 = umap.UMAP(n_components=2, random_state=42)
+        Y2 = reducer2.fit_transform(X)
+    else:
+        # PCA fallback using SVD
+        Xc = X - X.mean(axis=0)
+        U,S,Vt = np.linalg.svd(Xc, full_matrices=False)
+        Y2 = Xc @ Vt.T[:, :2]
     if args.out2d and plt is not None:
         plt.figure(figsize=(6,6))
         plt.scatter(Y2[:,0], Y2[:,1], s=6)
         plt.tight_layout(); plt.savefig(args.out2d, dpi=200)
         print(f"wrote {args.out2d}")
     if args.out3d and px is not None:
-        reducer3 = umap.UMAP(n_components=3, random_state=42)
-        Y3 = reducer3.fit_transform(X)
+        if HAVE_UMAP:
+            reducer3 = umap.UMAP(n_components=3, random_state=42)
+            Y3 = reducer3.fit_transform(X)
+        else:
+            # PCA fallback to 3 components
+            Xc = X - X.mean(axis=0)
+            U,S,Vt = np.linalg.svd(Xc, full_matrices=False)
+            Y3 = Xc @ Vt.T[:, :3]
         fig = px.scatter_3d(x=Y3[:,0], y=Y3[:,1], z=Y3[:,2], width=700, height=600)
         fig.write_html(args.out3d)
         print(f"wrote {args.out3d}")
+    elif args.out3d_png and plt is not None:
+        # Static 3D using matplotlib
+        from mpl_toolkits.mplot3d import Axes3D  # noqa: F401
+        if HAVE_UMAP:
+            reducer3 = umap.UMAP(n_components=3, random_state=42)
+            Y3 = reducer3.fit_transform(X)
+        else:
+            Xc = X - X.mean(axis=0)
+            U,S,Vt = np.linalg.svd(Xc, full_matrices=False)
+            Y3 = Xc @ Vt.T[:, :3]
+        fig = plt.figure(figsize=(6,6))
+        ax = fig.add_subplot(111, projection='3d')
+        ax.scatter(Y3[:,0], Y3[:,1], Y3[:,2], s=6)
+        plt.tight_layout(); plt.savefig(args.out3d_png, dpi=200)
+        print(f"wrote {args.out3d_png}")
 
 if __name__ == '__main__':
     main()
