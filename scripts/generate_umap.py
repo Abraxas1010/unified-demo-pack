@@ -38,8 +38,54 @@ except ImportError:
     go = None
 
 
+# Family-specific color palette (consistent across all visualizations)
+FAMILY_COLORS = {
+    'CLI': (0.263, 0.627, 0.278),       # #43a047 green
+    'Crypto': (0.118, 0.533, 0.898),    # #1e88e5 blue
+    'FHE': (0.557, 0.141, 0.667),       # #8e24aa purple
+    'ZK': (0.612, 0.153, 0.690),        # #9c27b0 violet
+    'Lattice': (0.984, 0.549, 0.000),   # #fb8c00 orange
+    'LoF': (0.898, 0.224, 0.208),       # #e53935 red
+    'CryptoSheaf': (0.000, 0.675, 0.757),  # #00acc1 cyan
+    'Quantum': (0.000, 0.537, 0.482),   # #00897b teal
+    'UnifiedPack': (0.486, 0.702, 0.259),  # #7cb342 light green
+    'Contextuality': (0.847, 0.106, 0.376),  # #d81b60 pink
+    'HeytingLean': (0.098, 0.463, 0.824),  # #1976d2 darker blue
+    'Other': (0.376, 0.490, 0.545)      # #607d8b gray
+}
+
+
+def get_family(name: str) -> str:
+    """Determine module family from namespace for consistent coloring."""
+    if 'CLI' in name:
+        return 'CLI'
+    if 'UnifiedPack' in name:
+        return 'UnifiedPack'
+    if 'CryptoSheaf' in name or 'Contextuality' in name:
+        return 'CryptoSheaf'
+    if 'Quantum' in name or 'Entropy' in name:
+        return 'Quantum'
+    if 'FHE' in name:
+        return 'FHE'
+    if 'ZK' in name:
+        return 'ZK'
+    if 'Lattice' in name:
+        return 'Lattice'
+    if 'LoF' in name:
+        return 'LoF'
+    if 'Crypto' in name:
+        return 'Crypto'
+    if 'HeytingLean' in name:
+        return 'HeytingLean'
+    return 'Other'
+
+
 def deterministic_color(name: str, saturation: float = 0.7, value: float = 0.85):
-    """Generate a deterministic HSV color from a string hash."""
+    """Get color for a namespace/family name."""
+    family = get_family(name)
+    if family in FAMILY_COLORS:
+        return FAMILY_COLORS[family]
+    # Fallback to HSV hash for unknown families
     import colorsys
     h = (hash(name) & 0xFFFFFFFF) / 0xFFFFFFFF
     r, g, b = colorsys.hsv_to_rgb(h, saturation, value)
@@ -82,11 +128,10 @@ def main():
         deg_in[v] = deg_in.get(v, 0) + 1
         deg[u] = deg.get(u, 0) + 1
         deg[v] = deg.get(v, 0) + 1
-    # groups by top-level namespace
+    # groups by semantic family (using get_family for consistent coloring)
     top = []
     for nm in raw_names:
-        seg = nm.split('.')[0]
-        top.append(seg)
+        top.append(get_family(nm))
     # choose top-k groups for one-hot features
     from collections import Counter
     group_counts = Counter(top)
@@ -132,17 +177,13 @@ def main():
         U,S,Vt = np.linalg.svd(Xc, full_matrices=False)
         Y2 = Xc @ Vt.T[:, :2]
     if args.out2d and HAVE_MPL:
-        # Group-aware coloring by top-level namespace; add edges and labels
+        # Group-aware coloring by semantic family; add edges and labels
         groups = top
-        import random
-        random.seed(42)
-        # deterministic color per group
-        cmap = {}
+
+        # Use family color palette
         def color_for(gname):
-            if gname not in cmap:
-                random.seed(hash(gname) & 0xFFFFFFFF)
-                cmap[gname] = (random.random()*0.8, random.random()*0.8, random.random()*0.8, 0.8)
-            return cmap[gname]
+            rgb = FAMILY_COLORS.get(gname, FAMILY_COLORS['Other'])
+            return (*rgb, 0.85)
         import matplotlib.pyplot as plt
         import numpy as _np
         fig, ax = plt.subplots(figsize=(8,8))
@@ -191,7 +232,7 @@ def main():
             ax.legend(fontsize=7, markerscale=3, loc='best', frameon=False)
         ax.set_xticks([]); ax.set_yticks([])
         ax.set_xlabel(''); ax.set_ylabel('')
-        fig.tight_layout(); fig.savefig(args.out2d, dpi=250)
+        fig.tight_layout(); fig.savefig(args.out2d, dpi=300, facecolor='white', bbox_inches='tight')
         print(f"wrote {args.out2d}")
     if args.out3d and HAVE_PLOTLY:
         if HAVE_UMAP:
