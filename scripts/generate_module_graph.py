@@ -49,6 +49,9 @@ def main():
 
     modules = {}
     for dirpath, _, filenames in os.walk(args.root):
+        # Skip vendored dependencies - only include project modules
+        if '.lake' in dirpath:
+            continue
         for fn in filenames:
             if fn.endswith('.lean'):
                 full = os.path.join(dirpath, fn)

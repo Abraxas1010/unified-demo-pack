@@ -73,29 +73,29 @@ This provides the type-level guarantee that passing verification implies a valid
 
 ## Visualizations
 
-The module dependency graph reveals the architectural structure of the formalization. With **8,104 modules** and **23,244 import edges**, the UMAP embeddings show how different mathematical domains cluster and interconnect.
+The module dependency graph reveals the architectural structure of the formalization. With **100 project modules** and **146 import edges**, the UMAP embeddings show how the cryptographic and quantum foundations components cluster and interconnect.
 
 ### 2D Proof Map
 ![UMAP 2D](docs/umap2d.png)
 
-*Nodes colored by top-level namespace (Mathlib, HeytingLean, Batteries, etc.). Hub labels identify high-degree modules. Edge density shows import relationships.*
+*Nodes colored by namespace (HeytingLean, UnifiedPack). Hub labels identify high-degree modules. Edge lines show import relationships.*
 
 ### 3D Proof Map (Static)
 ![UMAP 3D](docs/umap3d.png)
 
-*Three-dimensional embedding with namespace coloring and dependency edges. The "comet tail" pattern shows how foundational modules (Tactic, Init) radiate outward to domain-specific code.*
+*Three-dimensional embedding with namespace coloring. The crypto modules (FHE, ZK, Plonk, SIS) cluster together while the quantum contextuality modules form a separate group.*
 
 ### Interactive 3D Visualization
 
-For full exploration with **rotate/zoom/pan**, **hover details** (module name, namespace, in/out degree), and **clickable legend**:
+For full exploration with **rotate/zoom/pan**, **hover details** (module name, namespace, in/out degree), and **clickable legend**, generate locally:
 
-**[Open Interactive 3D Map](docs/umap3d.html)** *(requires local clone or GitHub Pages)*
-
-To regenerate visualizations locally:
 ```bash
 pip install umap-learn numpy matplotlib plotly
 make diagrams
+# Then open docs/umap3d.html in your browser
 ```
+
+*Note: The interactive HTML (~5MB with embedded Plotly.js) must be viewed locally after cloning.*
 
 ---
 
@@ -155,7 +155,7 @@ unified-demo-pack/
 ├── docs/
 │   ├── umap2d.png                    # 2D proof map
 │   ├── umap3d.png                    # 3D proof map (static)
-│   ├── umap3d.html                   # 3D proof map (interactive)
+│   ├── umap3d.html                   # 3D interactive (view locally)
 │   └── module_graph.json             # Raw graph data
 ├── scripts/
 │   ├── generate_umap.py              # Visualization generator
