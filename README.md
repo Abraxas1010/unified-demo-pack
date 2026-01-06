@@ -56,6 +56,24 @@ We instantiate a trivial PoK interface over SIS: the verifier is a Boolean funct
 - Full mode: runs corpora verification (via `WIP/pqc_lattice/scripts/pqc_verify_all.sh`), writes `.artifacts/pqc_verify_all.ok` (hardened; see below); the CLI sets `pqc.verified=true` and includes `pqc.evidence_hash` when the sentinel is present.
 - Strict builds: we use `lake build --wfail` and keep no `sorry`/`admit` in sources (guarded by `scripts/guard_no_sorry.sh`).
 
+## Visualizations
+
+The pack includes optional UMAP embeddings of the proof graph (2D/3D). A minimal 2D image is already included; 3D can be generated locally or via CI.
+
+- 2D UMAP (static PNG):
+
+![UMAP 2D](docs/umap2d.png)
+
+- 3D UMAP (static PNG):
+
+![UMAP 3D](docs/umap3d.png)
+
+To regenerate locally (requires python packages `umap-learn`, `numpy`, `matplotlib`, `plotly` — plotly is optional; we fall back to a 3D PNG):
+
+```bash
+make diagrams
+```
+
 ## JSON Contract
 
 ```json
