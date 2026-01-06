@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.org/unified_demo.schema.json",
+  "type": "object",
+  "required": ["demo", "contextuality", "valuation", "fhe", "zk", "pqc"],
+  "properties": {
+    "demo": { "type": "string", "const": "unified" },
+    "contextuality": {
+      "type": "object",
+      "required": ["contextual", "cover_size"],
+      "properties": {
+        "contextual": { "type": "boolean" },
+        "cover_size": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "valuation": {
+      "type": "object",
+      "required": ["supports"],
+      "properties": {
+        "supports": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["context", "size"],
+            "properties": {
+              "context": { "type": "string", "enum": ["ab", "bc", "ac"] },
+              "size": { "type": "integer", "enum": [2] }
+            }
+          },
+          "minItems": 3
+        }
+      }
+    },
+    "fhe": {
+      "type": "object",
+      "required": ["hom_add_demo"],
+      "properties": { "hom_add_demo": { "type": "boolean" } }
+    },
+    "zk": {
+      "type": "object",
+      "required": ["sis_pok_demo"],
+      "properties": { "sis_pok_demo": { "type": "boolean" } }
+    },
+    "pqc": {
+      "type": "object",
+      "required": ["verified"],
+      "properties": {
+        "verified": { "type": "boolean" },
+        "evidence_hash": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    }
+  }
+}

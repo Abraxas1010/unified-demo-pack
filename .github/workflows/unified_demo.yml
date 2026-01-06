@@ -1,0 +1,41 @@
+name: Unified Demo CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Install jsonschema
+        run: |
+          python -m pip install --upgrade pip
+          pip install jsonschema
+      - name: Install elan (Lean)
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | bash -s -- -y
+          echo "$HOME/.elan/bin" >> $GITHUB_PATH
+      - name: Build (lake)
+        working-directory: lean
+        run: |
+          lake update || true
+          lake build --wfail HeytingLean.CLI.UnifiedDemo
+      - name: Guard no sorry
+        run: bash scripts/guard_no_sorry.sh
+      - name: Run unified demo (quick)
+        working-directory: lean
+        run: |
+          ./.lake/build/bin/unified_demo --quick > unified_out.json || lake env lean --run HeytingLean/CLI/UnifiedDemo.lean -- --quick > unified_out.json
+      - name: Validate JSON
+        run: |
+python scripts/validate_unified_json.py schema/unified_demo.schema.json lean/unified_out.json
+      - name: Build valuation tests + AC exact
+        working-directory: lean
+        run: |
+          lake build --wfail HeytingLean.LoF.CryptoSheaf.Quantum.Entropy.ValuationSizeTests UnifiedPack.ContextualityAC
