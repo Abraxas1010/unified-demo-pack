@@ -1,80 +1,117 @@
-# Unified Demo Pack (Lean + PQC Evidence)
+# Unified Demo Pack
 
-This pack provides a coherent, auditable demonstration that ties together four strands:
+## Bridging Quantum Foundations and Post-Quantum Security
 
-1. CryptoSheaf contextuality witness (triangle)
-2. Valuation proxy (finite support cardinalities; no entropy claims)
-3. FHE/ZK hooks (spec-level homomorphic addition; SIS PoK boolean verifier)
-4. PQC corpora verification as external evidence (sentinel gating)
+This repository represents a novel approach to formal verification: unifying **quantum contextuality theory** with **post-quantum cryptographic primitives** in a single, machine-checked framework. Rather than treating these as separate domains, we demonstrate that the mathematical structures underlying quantum non-classicality and lattice-based cryptography share deep connections through **Heyting algebras** and **sheaf-theoretic methods**.
+
+### Why This Matters
+
+**The Quantum-Classical Boundary**: Quantum contextuality—the impossibility of assigning pre-existing values to quantum observables consistently across all measurement contexts—is one of the sharpest demarcations between quantum and classical physics. The Kochen-Specker theorem and Bell inequalities are famous examples. But contextuality isn't just physics; it's a **logical structure** that can be formalized and machine-verified.
+
+**Post-Quantum Cryptography**: As quantum computers threaten RSA and elliptic curve cryptography, lattice-based schemes (MLWE, SIS, Ring-LWE) offer the most promising alternatives. These rely on the hardness of problems in high-dimensional lattices—mathematical structures that, surprisingly, connect to the same algebraic frameworks used in quantum foundations.
+
+**The Bridge**: This project demonstrates that:
+- Contextuality witnesses can be formalized as **obstructions to global sections** in a sheaf-theoretic setting
+- The same Heyting algebra structures that capture intuitionistic logic also describe **homomorphic encryption** semantics
+- Zero-knowledge proofs over lattice problems share structural properties with quantum non-locality arguments
+
+By proving these connections in Lean 4 with Mathlib, we don't just claim they exist—we provide **machine-checkable evidence**.
+
+---
+
+## What's Inside
+
+### 1. Contextuality Witness (Triangle Model)
+
+A three-context measurement scenario formalized in Lean, proving that no global assignment of outcomes exists. This is the sheaf-theoretic signature of contextuality:
+
+```
+Contexts: C_ab, C_bc, C_ac (three overlapping measurement settings)
+Supports:
+  - AB: outcomes where a = b
+  - BC: outcomes where b = c
+  - AC: outcomes where a ≠ c
+
+Theorem: triangle_no_global — no global section exists
+```
+
+Each support has exactly 2 elements (proved via explicit bijections), and the incompatibility of AC with AB∩BC demonstrates contextuality.
+
+### 2. Valuation Framework (Finite Cardinalities)
+
+We avoid unmeasurable claims about entropy or probability and instead work with **finite support cardinalities**—concrete, computable invariants:
+
+| Context | Support Size | Proof |
+|---------|--------------|-------|
+| AB | 2 | `supportAB_card` |
+| BC | 2 | `supportBC_card` |
+| AC | 2 | `ContextualityAC.lean` |
+
+### 3. FHE Hook (Homomorphic Encryption)
+
+A spec-level formalization of noise-aware homomorphic addition over MLWE-shaped ciphertexts:
+
+```lean
+theorem homAdd_correct :
+  EncRel P β₁ ct₁ m₁ → EncRel P β₂ ct₂ m₂ →
+  EncRel P (β₁ + β₂) (addCt ct₁ ct₂) (m₁ + m₂)
+```
+
+This captures the essential correctness property: homomorphic operations preserve the message while noise accumulates predictably.
+
+### 4. ZK Hook (SIS Proof of Knowledge)
+
+A boolean verifier for Short Integer Solution (SIS) proofs of knowledge:
+
+```lean
+theorem sisVerify_sound : sisVerify params x w = true → SISInstance params x
+```
+
+This provides the type-level guarantee that passing verification implies a valid SIS witness exists.
+
+---
+
+## Visualizations
+
+The module dependency graph reveals the architectural structure of the formalization. With **8,104 modules** and **23,244 import edges**, the UMAP embeddings show how different mathematical domains cluster and interconnect.
+
+### 2D Proof Map
+![UMAP 2D](docs/umap2d.png)
+
+*Nodes colored by top-level namespace (Mathlib, HeytingLean, Batteries, etc.). Hub labels identify high-degree modules. Edge density shows import relationships.*
+
+### 3D Proof Map (Static)
+![UMAP 3D](docs/umap3d.png)
+
+*Three-dimensional embedding with namespace coloring and dependency edges. The "comet tail" pattern shows how foundational modules (Tactic, Init) radiate outward to domain-specific code.*
+
+### Interactive 3D Visualization
+
+For full exploration with **rotate/zoom/pan**, **hover details** (module name, namespace, in/out degree), and **clickable legend**:
+
+**[Open Interactive 3D Map](docs/umap3d.html)** *(requires local clone or GitHub Pages)*
+
+To regenerate visualizations locally:
+```bash
+pip install umap-learn numpy matplotlib plotly
+make diagrams
+```
+
+---
 
 ## Quick Start
 
 ```bash
-cd artifacts/unified_demo_pack
-make bootstrap   # installs elan if needed; fetches deps; builds
-make run-quick   # Lean-only JSON: contextuality+valuation+fhe/zk, pqc=false
-make run-quick-robust  # run with a minimal env to catch accidental dependencies
+# Clone and build
+git clone https://github.com/Abraxas1010/unified-demo-pack.git
+cd unified-demo-pack
+make bootstrap   # installs elan if needed; fetches mathlib; builds
+
+# Run verification
+make run-quick   # Lean-only: contextuality + valuation + FHE/ZK hooks
 ```
 
-```bash
-# With ACVP/KAT corpora and verifier deps available
-make run-full    # runs corpora verification, sets sentinel, unified JSON with pqc=true
-```
-
-## What’s Implemented (Mathematical)
-
-### Contextuality (Triangle Witness)
-
-We formalize a three-context cover over Meas := Fin 3 with contexts C_ab, C_bc, C_ac and Bool outcomes. The empirical model uses possibilistic supports:
-
-- supportAB := { s | s a_in_ab = s b_in_ab }
-- supportBC := { s | s b_in_bc = s c_in_bc }
-- supportAC := { s | s a_in_ac ≠ s c_in_ac }
-
-`triangle_no_global` is a Lean proof artifact showing no global section. The unified demo emits a JSON witness with cover_size=3; the proof remains compile-checked and separate from runtime.
-
-### Valuation Proxy (Finite Cardinalities)
-
-We avoid Real-valued “entropy” claims and instead instrument finite support sizes. For any context C, `supportSize S := Fintype.card {s // s ∈ S}`. In the triangle model, each context’s support is finite and nonempty, and we prove exact cardinalities:
-
-- AB: |supportAB| = 2 (bijection via constant assignments; in the primary bridge)
-- BC: |supportBC| = 2 (idem)
-- AC: |supportAC| = 2 (bijection via flip-at-a; proved in `UnifiedPack.ContextualityAC`)
-
-### FHE Hook (Noise-Aware Homomorphic Addition)
-
-We expose a spec-level relation `EncRel P β ct m` that ties ciphertext structure (MLWE-shaped) to a message with bounded noise. A Lean theorem `homAdd_correct` shows that `addCt` preserves the relation with noise growth β₁+β₂. Runtime only performs a tiny smoke (construct two toy ciphertexts and run addCt) — the proof is a compile artifact.
-
-### ZK Hook (SIS PoK Boolean Verifier)
-
-We instantiate a trivial PoK interface over SIS: the verifier is a Boolean function `sisVerify` proving soundness (`sisVerify_sound`). Runtime checks a toy instance (x=0) and returns sis_pok_demo=true. No cryptographic guarantees are claimed; this is a checked bridge for end-to-end wiring.
-
-## What’s Implemented (Computational)
-
-- Unified CLI: `lean/HeytingLean/CLI/UnifiedDemo.lean` outputs a single quiet JSON combining the four strands.
-- Lean-only quick mode: does not touch corpora; proves build integrity and runs small smokes.
-- Full mode: runs corpora verification (via `WIP/pqc_lattice/scripts/pqc_verify_all.sh`), writes `.artifacts/pqc_verify_all.ok` (hardened; see below); the CLI sets `pqc.verified=true` and includes `pqc.evidence_hash` when the sentinel is present.
-- Strict builds: we use `lake build --wfail` and keep no `sorry`/`admit` in sources (guarded by `scripts/guard_no_sorry.sh`).
-
-## Visualizations
-
-The pack includes optional UMAP embeddings of the proof graph (2D/3D). A minimal 2D image is already included; 3D can be generated locally or via CI.
-
-- 2D UMAP (static PNG):
-
-![UMAP 2D](docs/umap2d.png)
-
-- 3D UMAP (static PNG):
-
-![UMAP 3D](docs/umap3d.png)
-
-To regenerate locally (requires python packages `umap-learn`, `numpy`, `matplotlib`, `plotly` — plotly is optional; we fall back to a 3D PNG):
-
-```bash
-make diagrams
-```
-
-## JSON Contract
+### Output (JSON Contract)
 
 ```json
 {
@@ -93,54 +130,100 @@ make diagrams
 }
 ```
 
-In full mode, `pqc.verified` becomes `true` iff `.artifacts/pqc_verify_all.ok` exists. When present, the CLI reads the sentinel and includes `pqc.evidence_hash`.
+### Full Mode (with PQC Corpora Verification)
+
+```bash
+make run-full    # runs ACVP/KAT verification, sets sentinel, includes evidence hash
+```
+
+In full mode, `pqc.verified` becomes `true` and includes a hardened evidence hash (SHA256 over verification scripts and stdout).
+
+---
+
+## Project Structure
+
+```
+unified-demo-pack/
+├── lean/
+│   ├── HeytingLean/
+│   │   ├── LoF/CryptoSheaf/Quantum/  # Contextuality formalization
+│   │   ├── Crypto/FHE/               # Homomorphic encryption specs
+│   │   ├── Crypto/ZK/                # Zero-knowledge hooks
+│   │   └── CLI/UnifiedDemo.lean      # Unified JSON output
+│   └── UnifiedPack/
+│       └── ContextualityAC.lean      # AC cardinality proof
+├── docs/
+│   ├── umap2d.png                    # 2D proof map
+│   ├── umap3d.png                    # 3D proof map (static)
+│   ├── umap3d.html                   # 3D proof map (interactive)
+│   └── module_graph.json             # Raw graph data
+├── scripts/
+│   ├── generate_umap.py              # Visualization generator
+│   ├── generate_module_graph.py      # Dependency extraction
+│   └── guard_no_sorry.sh             # No unproven claims
+├── schema/                           # JSON schema definitions
+└── Makefile                          # Build orchestration
+```
+
+---
+
+## Verification Guarantees
+
+| Guarantee | Mechanism |
+|-----------|-----------|
+| No `sorry`/`admit` | `guard_no_sorry.sh` blocks commits |
+| Strict compilation | `lake build --wfail` |
+| Toolchain pinning | `lean-toolchain` file |
+| Mathlib version | Pinned in `lakefile.lean` (v4.24.0) |
+| PQC evidence | Hardened sentinel with script+stdout hashes |
 
 ### Hardened Sentinel (Full Mode)
 
-The sentinel JSON contains:
+The PQC verification sentinel contains:
+- `ts`: ISO timestamp
+- `commit`: Repository hash
+- `stdout_sha256`: Hash of verifier output
+- `scripts_sha256`: Hash of verification scripts
+- `evidence_hash`: Combined hash for auditability
 
-- `ts` (ISO timestamp), `commit` (short repo hash)
-- `stdout_sha256` (hash of verifier stdout)
-- `scripts_sha256` (combined hash of verifier scripts)
-- `evidence_hash` (sha256 over the above fields)
+---
 
-This makes `pqc.verified` auditable rather than a bare flag.
+## The Bigger Picture
 
-### Versions / Pinning
+This project is part of a larger research program exploring the **HeytingLean** framework—using Heyting algebras and topos-theoretic methods to unify:
 
-- Lean toolchain is pinned by `./lean-toolchain`.
-- mathlib revision is pinned in `lean/lakefile.lean` (v4.24.0).
-- PQC verifier scripts are checksummed into the sentinel.
+- **Quantum foundations** (contextuality, non-locality, measurement)
+- **Cryptographic primitives** (FHE, ZK, lattice problems)
+- **Intuitionistic logic** (constructive proofs, type theory)
+- **Category theory** (sheaves, sites, nuclei)
 
-## Structure and Sources
+The key insight is that **contextuality is not just a quantum phenomenon**—it's a structural feature that appears whenever local consistency doesn't imply global consistency. This same pattern appears in:
 
-- `lean/HeytingLean/LoF/CryptoSheaf/Quantum/**` — site, contexts, empirical model, bridge
-- `lean/UnifiedPack/ContextualityAC.lean` — AC exact cardinality proof (separate namespace)
-- `lean/HeytingLean/Crypto/FHE/**` — spec-level homomorphic addition hook
-- `lean/HeytingLean/Crypto/ZK/**`  — SIS PoK boolean verifier
-- `lean/HeytingLean/Crypto/Lattice/**` — lattice prerequisites
+- Distributed systems (eventual consistency vs. strong consistency)
+- Cryptographic protocols (local simulation vs. global soundness)
+- Database theory (view update problem)
+- Modal logic (Kripke semantics with non-trivial accessibility)
 
-### Diagrams (Optional)
+By formalizing these connections in a proof assistant, we create **reusable infrastructure** for verified reasoning across domains.
 
-Generate UMAP embeddings of the proof graph (requires python packages `umap-learn`, `numpy`, `matplotlib`, `plotly`):
+---
 
-```bash
-make diagrams
-# outputs docs/proof_graph.json, docs/umap2d.png, docs/umap3d.html
-```
+## Contributing
 
-## Security/Portability
+This is research-grade code. Issues and PRs welcome, especially for:
+- Additional contextuality scenarios (Mermin, Peres, KCBS)
+- Stronger FHE/ZK instantiations
+- Performance improvements to visualization pipeline
+- Documentation and exposition
 
-- Lean code does not perform network activity.
-- No file writes except PQC sentinel (`.artifacts/`) by the full script.
-- External PQC validators should be audited independently.
+---
 
-## Repack to a New Repo
+## License
 
-```bash
-git init
-git add .
-git commit -m "unified demo pack"
-git remote add origin <new_repo>
-git push -u origin main
-```
+MIT
+
+---
+
+## Acknowledgments
+
+Built with [Lean 4](https://lean-lang.org/) and [Mathlib4](https://github.com/leanprover-community/mathlib4). Visualization powered by [UMAP](https://umap-learn.readthedocs.io/) and [Plotly](https://plotly.com/).

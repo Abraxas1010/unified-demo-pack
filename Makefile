@@ -36,4 +36,8 @@ diagrams:
 	# Select a non-empty graph json (prefer proof_graph)
 	python3 -c "import json,sys,pathlib; p='docs/proof_graph.json'; print(p if (pathlib.Path(p).exists() and len(json.load(open(p)).get('nodes',[]))>0) else 'docs/module_graph.json')" > docs/_graph.pick
 	GRAPH_JSON=$$(cat docs/_graph.pick); \
-	python3 scripts/generate_umap.py --graph $$GRAPH_JSON --out2d docs/umap2d.png --out3d-png docs/umap3d.png
+	python3 scripts/generate_umap.py --graph $$GRAPH_JSON \
+		--out2d docs/umap2d.png \
+		--out3d docs/umap3d.html \
+		--out3d-png docs/umap3d.png \
+		--title "HeytingLean Module Dependency Graph"
