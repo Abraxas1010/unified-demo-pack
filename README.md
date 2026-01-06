@@ -73,32 +73,21 @@ This provides the type-level guarantee that passing verification implies a valid
 
 ## Proof Cartography
 
-The module dependency graph reveals the architectural structure of the formalization—**100 project modules** connected by **146 import edges**.
+**100 project modules** · **146 import edges** · Color-coded by module family
 
-<table>
-<tr>
-<td width="50%">
+### 3D Proof Map (Interactive)
+
+<a href="https://abraxas1010.github.io/unified-demo-pack/unified_3d.html">
+<img src="docs/unified_3d_preview.svg" alt="3D Proof Map - Click for Interactive Viewer" width="100%"/>
+</a>
+
+*Click the image above to open the interactive WebGL viewer. Drag to rotate, wheel to zoom, shift+drag to pan, hover for module details.*
 
 ### 2D Proof Map
-<img src="docs/umap2d.png" alt="2D UMAP" width="400"/>
+
+<img src="docs/umap2d.png" alt="2D UMAP embedding" width="600"/>
 
 *Crypto modules (FHE, ZK, Plonk) cluster separately from quantum contextuality modules.*
-
-</td>
-<td width="50%">
-
-### 3D Proof Map
-<img src="docs/umap3d.png" alt="3D UMAP" width="400"/>
-
-**[▶ Open Interactive 3D Viewer](https://abraxas1010.github.io/unified-demo-pack/umap3d.html)**
-
-*Rotate, zoom, hover for module details.*
-
-</td>
-</tr>
-</table>
-
-> **Note:** GitHub Pages hosts the interactive viewer. Enable Pages from `docs/` branch in repo settings, or [view locally](docs/umap3d.html) after cloning.
 
 ---
 
