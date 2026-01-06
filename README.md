@@ -71,31 +71,34 @@ This provides the type-level guarantee that passing verification implies a valid
 
 ---
 
-## Visualizations
+## Proof Cartography
 
-The module dependency graph reveals the architectural structure of the formalization. With **100 project modules** and **146 import edges**, the UMAP embeddings show how the cryptographic and quantum foundations components cluster and interconnect.
+The module dependency graph reveals the architectural structure of the formalization—**100 project modules** connected by **146 import edges**.
+
+<table>
+<tr>
+<td width="50%">
 
 ### 2D Proof Map
-![UMAP 2D](docs/umap2d.png)
+<img src="docs/umap2d.png" alt="2D UMAP" width="400"/>
 
-*Nodes colored by namespace (HeytingLean, UnifiedPack). Hub labels identify high-degree modules. Edge lines show import relationships.*
+*Crypto modules (FHE, ZK, Plonk) cluster separately from quantum contextuality modules.*
 
-### 3D Proof Map (Static)
-![UMAP 3D](docs/umap3d.png)
+</td>
+<td width="50%">
 
-*Three-dimensional embedding with namespace coloring. The crypto modules (FHE, ZK, Plonk, SIS) cluster together while the quantum contextuality modules form a separate group.*
+### 3D Proof Map
+<img src="docs/umap3d.png" alt="3D UMAP" width="400"/>
 
-### Interactive 3D Visualization
+**[▶ Open Interactive 3D Viewer](https://abraxas1010.github.io/unified-demo-pack/umap3d.html)**
 
-For full exploration with **rotate/zoom/pan**, **hover details** (module name, namespace, in/out degree), and **clickable legend**, generate locally:
+*Rotate, zoom, hover for module details.*
 
-```bash
-pip install umap-learn numpy matplotlib plotly
-make diagrams
-# Then open docs/umap3d.html in your browser
-```
+</td>
+</tr>
+</table>
 
-*Note: The interactive HTML (~5MB with embedded Plotly.js) must be viewed locally after cloning.*
+> **Note:** GitHub Pages hosts the interactive viewer. Enable Pages from `docs/` branch in repo settings, or [view locally](docs/umap3d.html) after cloning.
 
 ---
 
