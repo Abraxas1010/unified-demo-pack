@@ -8,12 +8,10 @@ SENTINEL="$ART_DIR/pqc_verify_all.ok"
 mkdir -p "$ART_DIR"
 
 "$ROOT_DIR/scripts/guard_no_sorry.sh"
-(cd "$ROOT_DIR/lean" && lake build --wfail HeytingLean.CLI.UnifiedDemo)
+(cd "$ROOT_DIR/lean" && lake build --wfail unified_demo) || (cd "$ROOT_DIR/lean" && lake build --wfail HeytingLean.CLI.UnifiedDemo)
 
 # Run PQC verification and capture output
 OUT_STD="$ART_DIR/pqc_verify_all.stdout"
-# Ensure deterministic locale for hashing/sorting
-export LC_ALL=C
 bash "$ROOT_DIR/WIP/pqc_lattice/scripts/pqc_verify_all.sh" | tee "$OUT_STD"
 
 # Compute hardened sentinel
@@ -30,42 +28,20 @@ COMMIT="$(git -C "$ROOT_DIR" rev-parse --short=12 HEAD 2>/dev/null || echo unkno
 STD_SHA="$(hash_cmd "$OUT_STD")"
 
 # Hash all verifier scripts as a combined digest
-# Deterministic combined hash of verifier scripts: sort paths, hash contents, hash the list
-SCRIPTS_SHA=$( \
-  find "$ROOT_DIR/WIP/pqc_lattice/scripts" -maxdepth 1 -type f -print0 \
-  | tr '\0' '\n' \
-  | LC_ALL=C sort \
-  | while IFS= read -r f; do \
-      [ -n "$f" ] && sha256sum "$f"; \
-    done \
-  | sha256sum | awk '{print $1}' \
-)
-
-# Dirty state + diff hash for audit clarity
-if git -C "$ROOT_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  if git -C "$ROOT_DIR" diff --no-ext-diff --quiet --exit-code; then
-    DIRTY=false
-    DIFF_SHA=""
-  else
-    DIRTY=true
-    DIFF_TMP="$ART_DIR/pqc_git_diff.patch"
-    git -C "$ROOT_DIR" diff --no-ext-diff --binary HEAD > "$DIFF_TMP" || true
-    DIFF_SHA="$(hash_cmd "$DIFF_TMP")"
-  fi
+SCR_LIST="$ART_DIR/pqc_scripts.sha256list"
+find "$ROOT_DIR/WIP/pqc_lattice/scripts" -type f -maxdepth 1 -print0 | xargs -0 -I{} bash -c 'if command -v sha256sum >/dev/null 2>&1; then sha256sum "$0"; else shasum -a 256 "$0"; fi' {} > "$SCR_LIST"
+if command -v sha256sum >/dev/null 2>&1; then
+  SCRIPTS_SHA="$(sha256sum "$SCR_LIST" | awk '{print $1}')"
 else
-  DIRTY=false
-  DIFF_SHA=""
+  SCRIPTS_SHA="$(shasum -a 256 "$SCR_LIST" | awk '{print $1}')"
 fi
 
-# Evidence hash over core fields
 EVID_SRC="$ART_DIR/pqc_evidence.src"
 {
   echo "$TS"
   echo "$COMMIT"
   echo "$STD_SHA"
   echo "$SCRIPTS_SHA"
-  echo "$DIRTY"
-  echo "$DIFF_SHA"
 } > "$EVID_SRC"
 EVID_SHA="$(hash_cmd "$EVID_SRC")"
 
@@ -77,8 +53,6 @@ cat > "$SENTINEL" <<JSON
   "commit": "$COMMIT",
   "stdout_sha256": "$STD_SHA",
   "scripts_sha256": "$SCRIPTS_SHA",
-  "dirty": $DIRTY,
-  "diff_sha256": "${DIFF_SHA}",
   "evidence_hash": "$EVID_SHA"
 }
 JSON

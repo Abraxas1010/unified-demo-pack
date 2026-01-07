@@ -78,4 +78,31 @@ structure HomomorphicMulSpec (P : MLWEParams) where
       EncRel P β2 ct2 m2 →
       EncRel P (betaOut β1 β2) (mulCt ct1 ct2) (m1 * m2)
 
+/-!
+## Interface composition lemmas
+
+These lemmas let downstream code “stage” correctness results without committing to a concrete
+multiplication implementation.
+-/
+
+theorem homAddMul_left_correct {P : MLWEParams} (S : HomomorphicMulSpec P)
+    {β1 β2 β3 : Nat}
+    {ct1 ct2 ct3 : MLWEInstance P} {m1 m2 m3 : ModVec P.k P.n P.q}
+    (hA : ct2.A = ct1.A)
+    (h1 : EncRel P β1 ct1 m1)
+    (h2 : EncRel P β2 ct2 m2)
+    (h3 : EncRel P β3 ct3 m3) :
+    EncRel P (S.betaOut (β1 + β2) β3) (S.mulCt (addCt P ct1 ct2) ct3) ((m1 + m2) * m3) := by
+  exact S.correct (homAdd_correct (P := P) (hA := hA) h1 h2) h3
+
+theorem homAddMul_right_correct {P : MLWEParams} (S : HomomorphicMulSpec P)
+    {β1 β2 β3 : Nat}
+    {ct1 ct2 ct3 : MLWEInstance P} {m1 m2 m3 : ModVec P.k P.n P.q}
+    (hA : ct3.A = ct2.A)
+    (h2 : EncRel P β2 ct2 m2)
+    (h3 : EncRel P β3 ct3 m3)
+    (h1 : EncRel P β1 ct1 m1) :
+    EncRel P (S.betaOut β1 (β2 + β3)) (S.mulCt ct1 (addCt P ct2 ct3)) (m1 * (m2 + m3)) := by
+  exact S.correct h1 (homAdd_correct (P := P) (hA := hA) h2 h3)
+
 end HeytingLean.Crypto.FHE

@@ -21,9 +21,13 @@ By proving these connections in Lean 4 with Mathlib, we don't just claim they ex
 
 ## What's Inside
 
-### 1. Contextuality Witness (Triangle Model)
+### 1. Contextuality Witnesses
 
-A three-context measurement scenario formalized in Lean, proving that no global assignment of outcomes exists. This is the sheaf-theoretic signature of contextuality:
+We provide two complementary contextuality witnesses, each formally verified:
+
+#### Triangle Model (Possibilistic)
+
+A three-context measurement scenario proving that no global assignment of outcomes exists:
 
 ```
 Contexts: C_ab, C_bc, C_ac (three overlapping measurement settings)
@@ -37,6 +41,21 @@ Theorem: triangle_no_global — no global section exists
 
 Each support has exactly 2 elements (proved via explicit bijections), and the incompatibility of AC with AB∩BC demonstrates contextuality.
 
+#### Mermin-Peres Magic Square (Quantum-Realizable)
+
+The Mermin-Peres magic square is a 3x3 grid of two-qubit observables where:
+- Each row product = +I (identity)
+- Each column product = +I... except column 3 = -I
+
+```lean
+theorem no_assignment : ¬∃ (f : Fin 3 → Fin 3 → Int),
+  (∀ i j, f i j = 1 ∨ f i j = -1) ∧
+  (∀ i, f i 0 * f i 1 * f i 2 = 1) ∧
+  (∀ j, f 0 j * f 1 j * f 2 j = if j = 2 then -1 else 1)
+```
+
+This is grounded in actual quantum mechanics via explicit Pauli matrix constructions in `HeytingLean.Quantum.Contextuality.MerminPeresRealization`, proving the operator identities that make this a physically realizable witness.
+
 ### 2. Valuation Framework (Finite Cardinalities)
 
 We avoid unmeasurable claims about entropy or probability and instead work with **finite support cardinalities**—concrete, computable invariants:
@@ -47,7 +66,31 @@ We avoid unmeasurable claims about entropy or probability and instead work with 
 | BC | 2 | `supportBC_card` |
 | AC | 2 | `ContextualityAC.lean` |
 
-### 3. FHE Hook (Homomorphic Encryption)
+### 3. Physical Process Layer (Quantum States & Channels)
+
+The contextuality witnesses are grounded in a rigorous physical process formalization:
+
+```lean
+-- Density operators (positive semidefinite, trace 1)
+structure Density (n : ℕ) where
+  mat : Mat n
+  psd : PosSemidef mat
+  tr_one : Matrix.trace mat = 1
+
+-- Quantum channels via Kraus representation
+structure KrausChannel (n m : ℕ) where
+  ops : List (Matrix (Fin n) (Fin m) ℂ)
+  complete : ∑ K in ops, Kᴴ * K = 1
+```
+
+Key verified properties:
+- `trace_map`: Channels preserve trace
+- `isHermitian_map`: Channels preserve Hermiticity
+- `posSemidef_map`: Channels preserve positive semidefiniteness
+
+This provides the mathematical foundation for treating contextuality as a property of *physical processes*, not just abstract combinatorics.
+
+### 4. FHE Hook (Homomorphic Encryption)
 
 A spec-level formalization of noise-aware homomorphic addition over MLWE-shaped ciphertexts:
 
@@ -59,7 +102,7 @@ theorem homAdd_correct :
 
 This captures the essential correctness property: homomorphic operations preserve the message while noise accumulates predictably.
 
-### 4. ZK Hook (SIS Proof of Knowledge)
+### 5. ZK Hook (SIS Proof of Knowledge)
 
 A boolean verifier for Short Integer Solution (SIS) proofs of knowledge:
 
@@ -108,7 +151,20 @@ make run-quick   # Lean-only: contextuality + valuation + FHE/ZK hooks
 ```json
 {
   "demo": "unified",
-  "contextuality": { "contextual": true, "cover_size": 3 },
+  "contextuality": {
+    "contextual": true,
+    "cover_size": 3,
+    "witnesses": {
+      "triangle": { "no_global": true, "kind": "possibilistic" },
+      "mermin_peres": { "no_assignment": true, "quantum_realizable": true }
+    },
+    "checks": true
+  },
+  "physical": {
+    "qstate": true,
+    "qchannel": true,
+    "checks": true
+  },
   "valuation": {
     "supports": [
       { "context": "ab", "size": 2 },
@@ -139,8 +195,15 @@ unified-demo-pack/
 ├── lean/
 │   ├── HeytingLean/
 │   │   ├── LoF/CryptoSheaf/Quantum/  # Contextuality formalization
+│   │   │   └── MerminPeres.lean      # Magic square combinatorics
+│   │   ├── Quantum/
+│   │   │   ├── QState.lean           # Density operators
+│   │   │   ├── QChannel.lean         # Kraus channels
+│   │   │   └── Contextuality/        # Quantum realizations
+│   │   │       └── MerminPeresRealization.lean
 │   │   ├── Crypto/FHE/               # Homomorphic encryption specs
 │   │   ├── Crypto/ZK/                # Zero-knowledge hooks
+│   │   │   └── SigmaProtocolSpec.lean # Sigma protocol interface
 │   │   └── CLI/UnifiedDemo.lean      # Unified JSON output
 │   └── UnifiedPack/
 │       └── ContextualityAC.lean      # AC cardinality proof
@@ -203,8 +266,9 @@ By formalizing these connections in a proof assistant, we create **reusable infr
 ## Contributing
 
 This is research-grade code. Issues and PRs welcome, especially for:
-- Additional contextuality scenarios (Mermin, Peres, KCBS)
-- Stronger FHE/ZK instantiations
+- Additional contextuality scenarios (KCBS, GHZ, other graph states)
+- Stronger FHE/ZK instantiations (multiplication proofs, concrete Sigma protocols)
+- POVM joint measurability formalization
 - Performance improvements to visualization pipeline
 - Documentation and exposition
 
