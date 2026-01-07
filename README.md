@@ -276,7 +276,22 @@ This is research-grade code. Issues and PRs welcome, especially for:
 
 ## License
 
-MIT
+This software is **dual-licensed**:
+
+| License | Use Case |
+|---------|----------|
+| **[AGPL-3.0](LICENSE-AGPL-3.0.md)** | Open source, academic, research, personal use |
+| **[Commercial](LICENSE-COMMERCIAL.md)** | Proprietary products, SaaS without source disclosure |
+
+See [LICENSE.md](LICENSE.md) for full details.
+
+**Quick summary:**
+- ✅ Free for open source projects (under AGPL-3.0)
+- ✅ Free for academic research
+- ✅ Free for personal/evaluation use
+- 💼 Commercial license required for proprietary use
+
+Contact: licensing@heytinglean.org
 
 ---
 
