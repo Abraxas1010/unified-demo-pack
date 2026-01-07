@@ -1,6 +1,6 @@
 # Contributor License Agreement (CLA)
 
-**HeytingLean Project**
+**Equation Capital LLC**
 
 ---
 
@@ -8,7 +8,7 @@
 
 This project uses **dual licensing** (AGPL-3.0 + Commercial). To maintain this model and allow commercial licensing of the complete codebase, we need permission from contributors to include their contributions under both licenses.
 
-This CLA grants the HeytingLean Project the rights needed to:
+This CLA grants Equation Capital LLC the rights needed to:
 1. Distribute your contributions under AGPL-3.0
 2. Include your contributions in commercially licensed versions
 3. Relicense if necessary for project sustainability
@@ -23,11 +23,11 @@ By submitting a contribution (via pull request, patch, or any other means) to th
 
 - **"You"** means the individual or legal entity submitting a contribution.
 - **"Contribution"** means any original work of authorship, including modifications or additions, that you submit to this project.
-- **"Project"** means the HeytingLean Unified Demo Pack and related repositories.
+- **"Project"** means the HeytingLean software suite and related repositories owned by Equation Capital LLC.
 
 ### 2. Grant of Copyright License
 
-You hereby grant to the HeytingLean Project and recipients of software distributed by the Project a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to:
+You hereby grant to Equation Capital LLC and recipients of software distributed by the Project a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to:
 
 - Reproduce your Contribution
 - Prepare derivative works of your Contribution
@@ -38,7 +38,7 @@ You hereby grant to the HeytingLean Project and recipients of software distribut
 
 ### 3. Grant of Patent License
 
-You hereby grant to the HeytingLean Project and recipients of software distributed by the Project a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer your Contribution, where such license applies only to patent claims licensable by you that are necessarily infringed by your Contribution alone or by combination of your Contribution with the Project.
+You hereby grant to Equation Capital LLC and recipients of software distributed by the Project a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer your Contribution, where such license applies only to patent claims licensable by you that are necessarily infringed by your Contribution alone or by combination of your Contribution with the Project.
 
 ### 4. Representations
 

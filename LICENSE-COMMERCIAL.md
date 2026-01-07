@@ -1,6 +1,6 @@
 # HeytingLean Commercial License
 
-**Copyright (c) 2026 HeytingLean Project. All rights reserved.**
+**Copyright (c) 2026 Equation Capital LLC. All rights reserved.**
 
 ---
 
@@ -12,7 +12,7 @@ This Commercial License grants you rights to use the HeytingLean Unified Demo Pa
 
 ## License Grant
 
-Subject to the terms of a signed Commercial License Agreement and payment of applicable fees, the HeytingLean Project grants you a non-exclusive, non-transferable license to:
+Subject to the terms of a signed Commercial License Agreement and payment of applicable fees, Equation Capital LLC grants you a non-exclusive, non-transferable license to:
 
 1. **Use** the software in proprietary applications
 2. **Modify** the software for internal purposes

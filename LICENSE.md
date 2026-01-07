@@ -1,6 +1,6 @@
 # HeytingLean Unified Demo Pack — Licensing
 
-**Copyright (c) 2026 HeytingLean Project. All rights reserved.**
+**Copyright (c) 2026 Equation Capital LLC. All rights reserved.**
 
 This software is available under a **dual licensing model**, allowing you to choose the license that best fits your needs.
 
@@ -89,7 +89,7 @@ These licenses are compatible with both AGPL-3.0 and commercial licensing.
 
 ## Contributor License Agreement
 
-By contributing to this project, you agree to the [Contributor License Agreement](CLA.md), which grants the HeytingLean Project the right to distribute your contributions under both the AGPL-3.0 and Commercial licenses.
+By contributing to this project, you agree to the [Contributor License Agreement](CLA.md), which grants Equation Capital LLC the right to distribute your contributions under both the AGPL-3.0 and Commercial licenses.
 
 ---
 
@@ -101,4 +101,14 @@ By contributing to this project, you agree to the [Contributor License Agreement
 
 ---
 
-*This dual licensing model is inspired by successful projects like Qt, MySQL, and MongoDB.*
+*This dual licensing model is inspired by successful projects like Qt, MySQL, and MongoDB.
+
+---
+
+## Legal Entity
+
+**Equation Capital LLC**
+Michigan Domestic Limited Liability Company
+Entity ID: 802934838
+Status: Active
+Registered: October 27, 2022*

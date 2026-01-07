@@ -8,7 +8,7 @@ Use these headers in source files.
 
 ```lean
 /-
-Copyright (c) 2026 HeytingLean Project. All rights reserved.
+Copyright (c) 2026 Equation Capital LLC. All rights reserved.
 Released under AGPL-3.0 license. Commercial licensing available.
 See LICENSE.md for details.
 SPDX-License-Identifier: AGPL-3.0-or-later
@@ -20,7 +20,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 ## Python/Shell Files (.py, .sh)
 
 ```python
-# Copyright (c) 2026 HeytingLean Project. All rights reserved.
+# Copyright (c) 2026 Equation Capital LLC. All rights reserved.
 # Released under AGPL-3.0 license. Commercial licensing available.
 # See LICENSE.md for details.
 # SPDX-License-Identifier: AGPL-3.0-or-later
@@ -32,7 +32,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 ```javascript
 /*
- * Copyright (c) 2026 HeytingLean Project. All rights reserved.
+ * Copyright (c) 2026 Equation Capital LLC. All rights reserved.
  * Released under AGPL-3.0 license. Commercial licensing available.
  * See LICENSE.md for details.
  * SPDX-License-Identifier: AGPL-3.0-or-later
@@ -45,7 +45,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
 ```html
 <!--
-Copyright (c) 2026 HeytingLean Project. All rights reserved.
+Copyright (c) 2026 Equation Capital LLC. All rights reserved.
 Released under AGPL-3.0 license. Commercial licensing available.
 See LICENSE.md for details.
 SPDX-License-Identifier: AGPL-3.0-or-later
