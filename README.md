@@ -291,7 +291,7 @@ See [LICENSE.md](LICENSE.md) for full details.
 - ✅ Free for personal/evaluation use
 - 💼 Commercial license required for proprietary use
 
-Contact: licensing@heytinglean.org
+Contact: rgoodman@apoth3osis.io
 
 ---
 

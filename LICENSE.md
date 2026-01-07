@@ -55,7 +55,7 @@ Commercial licenses are priced based on:
 - Use case (internal tools, commercial products, SaaS)
 - Support requirements
 
-Contact **licensing@heytinglean.org** for pricing and terms.
+Contact **rgoodman@apoth3osis.io** for pricing and terms.
 
 ---
 
@@ -95,9 +95,9 @@ By contributing to this project, you agree to the [Contributor License Agreement
 
 ## Questions?
 
-- **Licensing inquiries:** licensing@heytinglean.org
+- **Licensing inquiries:** rgoodman@apoth3osis.io
 - **Technical questions:** See [GitHub Issues](https://github.com/Abraxas1010/unified-demo-pack/issues)
-- **General information:** https://heytinglean.org
+- **General information:** https://equationcapital.io
 
 ---
 

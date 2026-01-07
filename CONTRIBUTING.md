@@ -137,7 +137,7 @@ If this is a concern for your employer, please discuss before contributing, or c
 ## Questions?
 
 - **Technical:** Open a GitHub issue
-- **CLA/Licensing:** cla@heytinglean.org
+- **CLA/Licensing:** rgoodman@apoth3osis.io
 - **General:** See [LICENSE.md](LICENSE.md)
 
 ---

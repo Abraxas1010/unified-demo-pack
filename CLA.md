@@ -88,7 +88,7 @@ For larger contributions or if required by your employer, you may sign explicitl
 
 1. Copy the text below
 2. Fill in your information
-3. Email to: cla@heytinglean.org
+3. Email to: rgoodman@apoth3osis.io
 
 ```
 HeytingLean CLA Signature
@@ -114,13 +114,13 @@ If you are contributing on behalf of your employer:
 
 1. Ensure you have authorization to contribute
 2. Your employer may need to sign a Corporate CLA
-3. Contact cla@heytinglean.org for Corporate CLA arrangements
+3. Contact rgoodman@apoth3osis.io for Corporate CLA arrangements
 
 ---
 
 ## Questions?
 
-- Email: cla@heytinglean.org
+- Email: rgoodman@apoth3osis.io
 - GitHub Issues: For public questions about the CLA
 
 ---

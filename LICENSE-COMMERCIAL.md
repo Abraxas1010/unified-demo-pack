@@ -92,7 +92,7 @@ The Commercial License does NOT grant rights to:
 
 ## How to Obtain a Commercial License
 
-1. **Contact us:** licensing@heytinglean.org
+1. **Contact us:** rgoodman@apoth3osis.io
 2. **Describe your use case:** Product type, deployment scale, timeline
 3. **Receive a quote:** We'll provide pricing and terms within 5 business days
 4. **Sign and pay:** Execute the Commercial License Agreement
@@ -109,7 +109,7 @@ Organizations may evaluate the software under AGPL-3.0 terms for up to 90 days b
 ## Contact
 
 **HeytingLean Licensing**
-- Email: licensing@heytinglean.org
+- Email: rgoodman@apoth3osis.io
 - Subject line: "Commercial License Inquiry - [Your Organization]"
 
 Please include:
